@@ -1,0 +1,15 @@
+{
+  "name": "news-finder",
+  "version": "1.0.0",
+  "description": "A program to retrieve news from a few web sites\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bruno Calou",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.72.0",
+    "require-dir": "^0.3.0"
+  }
+}
