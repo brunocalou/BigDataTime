@@ -6,11 +6,7 @@ console.log(APIs);
 
 for (var keyname in APIs) {
 	var api = APIs[keyname];
-
-	request({url: api.getAllUrl('bitcoin', 1), json: true}, function(err, res, json) {
-	  if (err) {
-	    throw err;
-	  }
-	  console.log(json);
+	api.getAllNewsUrls('bitcoin', 1, function (err, urls) {
+		console.log(urls);
 	});
 };
