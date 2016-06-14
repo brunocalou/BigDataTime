@@ -9,6 +9,7 @@
   "author": "Bruno Calou",
   "license": "ISC",
   "dependencies": {
+    "jsdom": "^9.2.1",
     "request": "^2.72.0",
     "require-dir": "^0.3.0"
   }
