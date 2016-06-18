@@ -9,14 +9,15 @@ var runAPI = require('../Util/runAPI');
 * @param {function} callback - The function to be called when it has finished
 */
 var getAllNewsUrls = function(query, page, callback) {
-    var url = 'http://www.usatoday.com/search/' + query + '/' + page + '/?ajax=true';
+    var url = 'http://www.bbc.co.uk/search?q=' + query + '&page=' + page + '&filter=news';
 
     jsdom.env(
         url, ["http://code.jquery.com/jquery.js"],
         function(err, window) {
             var urls = [];
-            var link_tags = window.$(".search-result-item a").each(function() {
-                if (this.href.lastIndexOf('/story/') > -1) {
+            var link_tags = window.$(".results h1 a").each(function() {
+                if (this.href.lastIndexOf('/technology-') > -1 ||
+                    this.href.lastIndexOf('/magazine-') > -1) {
                     urls.push(this.href);
                 }
             });
@@ -46,12 +47,9 @@ var getContent = function(url, callback) {
         	* @property {string} date - The date (YYYY-MM-DD)
         	*/
             var content = {};
-            content.text = window.$(".story [itemprop='articleBody'] p").text();
-            
-            var date_str = window.$(".asset-metabar-time").text();
-            var date_array = date_str.split(' '); //[time, a.m/p.m, EDT, month, day, year]
-            date_str = date_array.slice(date_array.length - 3).join(' ');
-
+            content.text = window.$(".story-body .story-body__inner p").text();
+            //TODO: Get the date
+            var date_str = window.$(".mini-info-list__item .date").text();
             try {
                 content.date = new Date(date_str).toISOString().substring(0, 10);
             } catch (err) {
@@ -68,8 +66,8 @@ var getContent = function(url, callback) {
 //     console.log(urls);
 // });
 
-// getContent('http://www.usatoday.com/story/money/business/2015/12/09/australia-police-raid/77025872/', function(err, content) {
-//     console.log(content);
+// getContent('http://www.bbc.com/news/technology-22110345', function(err, content) {
+//     console.log(content.date);
 // });
 
 runAPI(getAllNewsUrls, getContent);

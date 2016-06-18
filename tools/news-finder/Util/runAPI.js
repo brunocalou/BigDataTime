@@ -5,7 +5,7 @@ module.exports = function(getAllNewsUrls, getContent) {
         urls.forEach(function(url) {
             getContent(url, function(err, content) {
                 console.log('\n' + url);
-                console.log(content.date);
+                console.log(content);
             });
         });
     });
