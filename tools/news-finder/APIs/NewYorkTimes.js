@@ -1,5 +1,6 @@
 var request = require('request');
 var jsdom = require("jsdom");
+var runAPI = require('../Util/runAPI');
 
 /**
 * Get the all the news urls
@@ -47,12 +48,19 @@ var getContent = function(url, callback) {
         	*/
             var content = {};
             content.text = window.$("p.story-body-text").text();
-            content.date = new Date(window.$(".dateline")[0].getAttribute('datetime')).toISOString().substring(0, 10);
+
+            var url_array = url.split('/');
+            content.date = 
+            	url_array[3] + '-' + //Year
+            	url_array[4] +'-' + //Month
+            	url_array[5]; //Day
 
             callback(err, content);
         }
     );
 };
+
+runAPI(getAllNewsUrls, getContent);
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,
