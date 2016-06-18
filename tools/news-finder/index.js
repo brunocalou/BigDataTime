@@ -5,7 +5,7 @@ console.log(APIs);
 
 for (var keyname in APIs) {
 	var api = APIs[keyname];
-	api.getAllNewsUrls('bitcoin', 1, function (err, urls) {
+	api.getAllNewsUrls('bitcoin', 50, function (err, urls) {
 		console.log(urls);
 
 		urls.forEach(function (url) {

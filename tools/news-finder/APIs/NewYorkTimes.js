@@ -1,6 +1,12 @@
 var request = require('request');
 var jsdom = require("jsdom");
 
+/**
+* Get the all the news urls
+* @param {string} query - The query to be searched
+* @param {number} page - The page number of the news website to search
+* @param {function} callback - The function to be called when it has finished
+*/
 var getAllNewsUrls = function(query, page, callback) {
     var url = { url: 'http://query.nytimes.com/svc/add/v1/sitesearch.json?q=' + query + '&spotlight=true&facet=true&page=' + page, json: true };
 
@@ -19,20 +25,34 @@ var getAllNewsUrls = function(query, page, callback) {
     });
 };
 
-//TODO: Get date from news
+/**
+* Get the content and the data of a url
+* @param {string} url - The news url
+* @param {function} callback - The function to be called when it has finished
+*/
 var getContent = function(url, callback) {
+	/**
+	* Callback
+	* @param {Error} err - The error
+	* @param {content_obj} content - The content object
+	*/
     jsdom.env(
-        "http://www.nytimes.com/2016/04/07/business/dealbook/ripple-aims-to-put-every-transaction-on-one-ledger.html", ["http://code.jquery.com/jquery.js"],
+        url, ["http://code.jquery.com/jquery.js"],
         function(err, window) {
-            var content = window.$("p.story-body-text").text();
+        	/**
+        	* Content object
+        	* @typedef {object} content_obj
+        	* @property {string} text - The news text
+        	* @property {string} date - The date (YYYY-MM-DD)
+        	*/
+            var content = {};
+            content.text = window.$("p.story-body-text").text();
+            content.date = new Date(window.$(".dateline")[0].getAttribute('datetime')).toISOString().substring(0, 10);
 
             callback(err, content);
         }
     );
 };
-
-
-
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,
