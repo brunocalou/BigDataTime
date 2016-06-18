@@ -5,7 +5,7 @@ var runAPI = require('../Util/runAPI');
 /**
 * Get the all the news urls
 * @param {string} query - The query to be searched
-* @param {number} page - The page number of the news website to search
+* @param {number} page - The page number of the news website to search (min value = 1)
 * @param {function} callback - The function to be called when it has finished
 */
 var getAllNewsUrls = function(query, page, callback) {
@@ -46,16 +46,22 @@ var getContent = function(url, callback) {
         	* @property {string} text - The news text
         	* @property {string} date - The date (YYYY-MM-DD)
         	*/
-            var content = {};
-            content.text = window.$("p.story-body-text").text();
+            try {
+                var content = {};
+                content.text = '';
+                content.date = '';
+                content.text = window.$("p.story-body-text").text();
 
-            var url_array = url.split('/');
-            content.date = 
-            	url_array[3] + '-' + //Year
-            	url_array[4] +'-' + //Month
-            	url_array[5]; //Day
+                var url_array = url.split('/');
+                content.date = 
+                	url_array[3] + '-' + //Year
+                	url_array[4] +'-' + //Month
+                	url_array[5]; //Day
 
-            callback(err, content);
+                callback(err, content);
+            } catch (err) {
+                callback('Could not get the content', {});
+            }
         }
     );
 };

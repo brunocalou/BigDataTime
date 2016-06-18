@@ -1,11 +1,10 @@
-var request = require('request');
 var jsdom = require("jsdom");
 var runAPI = require('../Util/runAPI');
 
 /**
 * Get the all the news urls
 * @param {string} query - The query to be searched
-* @param {number} page - The page number of the news website to search
+* @param {number} page - The page number of the news website to search (min value = 1)
 * @param {function} callback - The function to be called when it has finished
 */
 var getAllNewsUrls = function(query, page, callback) {
@@ -45,21 +44,26 @@ var getContent = function(url, callback) {
         	* @property {string} text - The news text
         	* @property {string} date - The date (YYYY-MM-DD)
         	*/
-            var content = {};
-            content.text = window.$(".story [itemprop='articleBody'] p").text();
-            
-            var date_str = window.$(".asset-metabar-time").text();
-            var date_array = date_str.split(' '); //[time, a.m/p.m, EDT, month, day, year]
-            date_str = date_array.slice(date_array.length - 3).join(' ');
-
             try {
-                content.date = new Date(date_str).toISOString().substring(0, 10);
-            } catch (err) {
-                content = {};
-                err = 'Could not get the Date';
-            }
+                var content = {};
+                content.text = '';
+                content.date = '';
+                content.text = window.$(".story [itemprop='articleBody'] p").text();
+                
+                var date_str = window.$(".asset-metabar-time").text();
+                var date_array = date_str.split(' '); //[time, a.m/p.m, EDT, month, day, year]
+                date_str = date_array.slice(date_array.length - 3).join(' ');
 
-            callback(err, content);
+                try {
+                    content.date = new Date(date_str).toISOString().substring(0, 10);
+                } catch (err) {
+                    err = 'Could not get the Date';
+                }
+
+                callback(err, content);
+            } catch (err) {
+                callback('Could not get the content', {});
+            }
         }
     );
 };

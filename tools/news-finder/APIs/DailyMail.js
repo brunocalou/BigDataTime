@@ -8,17 +8,14 @@ var runAPI = require('../Util/runAPI');
 * @param {function} callback - The function to be called when it has finished
 */
 var getAllNewsUrls = function(query, page, callback) {
-    var url = 'http://www.bbc.co.uk/search?q=' + query + '&page=' + page + '&filter=news';
+    var url = 'http://www.dailymail.co.uk/home/search.html?offset=' + 50 * (page - 1) + '&size=50&sel=site&searchPhrase=' + query + '&sort=recent&type=article&type=video&days=all';
 
     jsdom.env(
         url, ["http://code.jquery.com/jquery.js"],
         function(err, window) {
             var urls = [];
-            var link_tags = window.$(".results h1 a").each(function() {
-                if (this.href.lastIndexOf('/technology-') > -1 ||
-                    this.href.lastIndexOf('/magazine-') > -1) {
-                    urls.push(this.href);
-                }
+            var link_tags = window.$(".sch-results .sch-res-title a").each(function() {
+                urls.push(this.href);
             });
             callback(err, urls);
         }
@@ -49,9 +46,13 @@ var getContent = function(url, callback) {
                 var content = {};
                 content.text = '';
                 content.date = '';
-                content.text = window.$(".story-body .story-body__inner p").text();
-                //TODO: Get the date
-                var date_str = window.$(".mini-info-list__item .date").text();
+
+                content.text = window.$(".article-text p:not([class])").text();
+
+                var date_str = window.$(".article-text .article-timestamp-published").text();
+                var date_array = date_str.split(' '); // e.g. [ '\n', '', 'Published:\n', '', '22:00', 'GMT,', '6', 'May', '2016\n' ]
+                date_str = date_array.slice(date_array.length - 3).join(' ').replace('\n', '');
+
                 try {
                     content.date = new Date(date_str).toISOString().substring(0, 10);
                 } catch (err) {
@@ -70,7 +71,7 @@ var getContent = function(url, callback) {
 //     console.log(urls);
 // });
 
-// getContent('http://www.bbc.com/news/technology-22110345', function(err, content) {
+// getContent('http://www.dailymail.co.uk/wires/reuters/article-3577915/Digital-currency-firm-founder-gets-20-years-U-S-prison.html', function(err, content) {
 //     console.log(content.date);
 // });
 
