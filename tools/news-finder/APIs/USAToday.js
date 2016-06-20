@@ -76,7 +76,7 @@ var getContent = function(url, callback) {
 //     console.log(content);
 // });
 
-runAPI(getAllNewsUrls, getContent);
+runAPI(getAllNewsUrls, getContent, 'USAToday');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,

@@ -74,7 +74,7 @@ var getContent = function(url, callback) {
 //     console.log(content.date);
 // });
 
-runAPI(getAllNewsUrls, getContent);
+runAPI(getAllNewsUrls, getContent, 'BBC');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,

@@ -66,7 +66,7 @@ var getContent = function(url, callback) {
     );
 };
 
-runAPI(getAllNewsUrls, getContent);
+runAPI(getAllNewsUrls, getContent, 'NewYorkTimes');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,

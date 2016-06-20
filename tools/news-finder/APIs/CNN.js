@@ -99,7 +99,7 @@ var getContent = function(url, callback) {
 //     console.log(content.date);
 // });
 
-runAPI(getAllNewsUrls, getContent);
+runAPI(getAllNewsUrls, getContent, 'CNN');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,

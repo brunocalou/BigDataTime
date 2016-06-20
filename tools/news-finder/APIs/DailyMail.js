@@ -75,7 +75,7 @@ var getContent = function(url, callback) {
 //     console.log(content.date);
 // });
 
-runAPI(getAllNewsUrls, getContent);
+runAPI(getAllNewsUrls, getContent, 'DailyMail');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,
