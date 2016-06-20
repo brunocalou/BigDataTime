@@ -50,11 +50,11 @@ var getContent = function(url, callback) {
                 content.text = '';
                 content.date = '';
                 content.text = window.$(".story-body .story-body__inner p").text();
-                //TODO: Get the date
+
                 var date_str = window.$(".mini-info-list__item .date").text();
                 try {
                     content.date = new Date(date_str).toISOString().substring(0, 10);
-                } catch (err) {
+                } catch (e) {
                     err = 'Could not get the Date';
                 }
 

@@ -56,7 +56,7 @@ var getContent = function(url, callback) {
 
                 try {
                     content.date = new Date(date_str).toISOString().substring(0, 10);
-                } catch (err) {
+                } catch (e) {
                     err = 'Could not get the Date';
                 }
 
