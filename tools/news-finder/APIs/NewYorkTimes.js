@@ -1,6 +1,6 @@
 var jsdom = require("jsdom");
-var runAPI = require('../Util/runAPI');
 var http = require('http');
+// var runAPI = require('../Util/runAPI');
 
 /**
  * Get the all the news urls
@@ -12,7 +12,7 @@ var getAllNewsUrls = function(query, page, callback) {
     var url = 'http://query.nytimes.com/svc/add/v1/sitesearch.json?q=' + query + '&spotlight=true&facet=true&page=' + page;
     var urls = []; //retrieved urls
 
-    http.get(url, function(response) {
+    var request = http.get(url, function(response) {
         var final_data = "";
 
         response.on('data', function(data) {
@@ -31,10 +31,11 @@ var getAllNewsUrls = function(query, page, callback) {
             }
         });
 
-        response.on('error', function (e) {
-            callback(e, urls);
-        })
     });
+
+    request.on('error', function (e) {
+        callback(e, urls);
+    })
 };
 
 /**
@@ -57,22 +58,28 @@ var getContent = function(url, callback) {
              * @property {string} text - The news text
              * @property {string} date - The date (YYYY-MM-DD)
              */
-            try {
-                var content = {};
-                content.text = '';
-                content.date = '';
-                content.text = window.$("p.story-body-text").text();
+             if (!err && typeof(window.$) === 'function') {
+                try {
+                    var content = {};
+                    content.text = '';
+                    content.date = '';
+                    content.text = window.$("p.story-body-text").text();
 
-                var url_array = url.split('/');
-                content.date =
-                    url_array[3] + '-' + //Year
-                    url_array[4] + '-' + //Month
-                    url_array[5]; //Day
+                    var url_array = url.split('/');
+                    content.date =
+                        url_array[3] + '-' + //Year
+                        url_array[4] + '-' + //Month
+                        url_array[5]; //Day
 
-                callback(err, content);
-            } catch (err) {
-                callback('Could not get the content', {});
-            }
+                    if (window) window.close();
+                    callback(err, content);
+                } catch (err) {
+                    if (window) window.close();
+                    callback('Could not get the content', {});
+                }
+             } else {
+                callback(err, {});
+             }
         }
     );
 };
@@ -85,7 +92,7 @@ var getContent = function(url, callback) {
 //     console.log(content.date);
 // });
 
-runAPI(getAllNewsUrls, getContent, 'NewYorkTimes');
+// runAPI(getAllNewsUrls, getContent, 'NewYorkTimes');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,

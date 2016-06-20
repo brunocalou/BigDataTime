@@ -1,5 +1,5 @@
 var jsdom = require("jsdom");
-var runAPI = require('../Util/runAPI');
+// var runAPI = require('../Util/runAPI');
 
 /**
 * Get the all the news urls
@@ -13,14 +13,19 @@ var getAllNewsUrls = function(query, page, callback) {
     jsdom.env(
         url, ["http://code.jquery.com/jquery.js"],
         function(err, window) {
-            var urls = [];
-            var link_tags = window.$(".results h1 a").each(function() {
-                if (this.href.lastIndexOf('/technology-') > -1 ||
-                    this.href.lastIndexOf('/magazine-') > -1) {
-                    urls.push(this.href);
-                }
-            });
-            callback(err, urls);
+            if (!err && typeof(window.$) === 'function') {
+                var urls = [];
+                var link_tags = window.$(".results h1 a").each(function() {
+                    if (this.href.lastIndexOf('/technology-') > -1 ||
+                        this.href.lastIndexOf('/magazine-') > -1) {
+                        urls.push(this.href);
+                    }
+                });
+                if (window) window.close();
+                callback(err, urls);
+            } else {
+                callback(err, []);
+            }
         }
     );
 };
@@ -45,22 +50,29 @@ var getContent = function(url, callback) {
         	* @property {string} text - The news text
         	* @property {string} date - The date (YYYY-MM-DD)
         	*/
-            try {
-                var content = {};
-                content.text = '';
-                content.date = '';
-                content.text = window.$(".story-body .story-body__inner p").text();
-
-                var date_str = window.$(".mini-info-list__item .date").text();
+            if (!err && typeof(window.$) === 'function') {
                 try {
-                    content.date = new Date(date_str).toISOString().substring(0, 10);
-                } catch (e) {
-                    err = 'Could not get the Date';
-                }
+                    var content = {};
+                    content.text = '';
+                    content.date = '';
+                    content.text = window.$(".story-body .story-body__inner p").text();
 
-                callback(err, content);
-            } catch (err) {
-                callback('Could not get the content', {});
+                    var date_str = window.$(".mini-info-list__item .date").text();
+
+                    try {
+                        content.date = new Date(date_str).toISOString().substring(0, 10);
+                    } catch (e) {
+                        err = 'Could not get the Date';
+                    }
+
+                    if (window) window.close();
+                    callback(err, content);
+                } catch (err) {
+                    if (window) window.close();
+                    callback('Could not get the content', {});
+                }
+            } else {
+                callback(err, {});
             }
         }
     );
@@ -74,7 +86,7 @@ var getContent = function(url, callback) {
 //     console.log(content.date);
 // });
 
-runAPI(getAllNewsUrls, getContent, 'BBC');
+// runAPI(getAllNewsUrls, getContent, 'BBC');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,

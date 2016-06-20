@@ -1,5 +1,5 @@
 var jsdom = require("jsdom");
-var runAPI = require('../Util/runAPI');
+// var runAPI = require('../Util/runAPI');
 
 /**
  * Get the all the news urls
@@ -13,22 +13,28 @@ var getAllNewsUrls = function(query, page, callback) {
     jsdom.env(
         url, ["http://code.jquery.com/jquery.js"],
         function(err, window) {
-            var urls = [];
-            try {
-                var json_str = window.$("#jsCode").text();
-                var results = JSON.parse(json_str).results[0];
-                results.forEach(function(news) {
-                    if (news.url.lastIndexOf('/technology/') > -1 || news.url.lastIndexOf('/investing/') > -1 ||
-                        news.url.lastIndexOf('/smallbusiness/') > -1 || news.url.lastIndexOf('/news/') > -1) {
-                        urls.push(news.url);
-                    } else if (news.url.lastIndexOf('/tech/') === -1) {
-                        urls.push('http://edition.cnn.com' + news.url)
-                    }
-                }.bind(this));
+            if (!err && typeof(window.$) === 'function') {
+                var urls = [];
+                try {
+                    var json_str = window.$("#jsCode").text();
+                    var results = JSON.parse(json_str).results[0];
+                    results.forEach(function(news) {
+                        if (news.url.lastIndexOf('/technology/') > -1 || news.url.lastIndexOf('/investing/') > -1 ||
+                            news.url.lastIndexOf('/smallbusiness/') > -1 || news.url.lastIndexOf('/news/') > -1) {
+                            urls.push(news.url);
+                        } else if (news.url.lastIndexOf('/tech/') === -1) {
+                            urls.push('http://edition.cnn.com' + news.url)
+                        }
+                    }.bind(this));
 
-                callback(err, urls);
-            } catch (err) {
-                callback('Could not retrieve url list', urls);
+                    if (window) window.close();
+                    callback(err, urls);
+                } catch (err) {
+                    if (window) window.close();
+                    callback('Could not retrieve url list', urls);
+                }
+            } else {
+                callback(err, []);
             }
         }
     );
@@ -54,38 +60,42 @@ var getContent = function(url, callback) {
              * @property {string} text - The news text
              * @property {string} date - The date (YYYY-MM-DD)
              */
-            try {
-                var content = {};
-                content.text = '';
-                content.date = '';
+            if (!err && typeof(window.$) === 'function') {
+                try {
+                    var content = {};
+                    content.text = '';
+                    content.date = '';
 
-                if (url.lastIndexOf('edition.cnn.com') > -1) {
-                    content.text = window.$(".zn-body__paragraph").text();
-                    var date_str = window.$(".update-time").text();
-                    var date_array = date_str.split(' '); // e.g. [ 'Updated', '1237', 'GMT', '(2037', 'HKT)', 'February', '17', '2015', '' ]
-                    date_str = date_array.slice(date_array.length - 4).join(' ');
+                    if (url.lastIndexOf('edition.cnn.com') > -1) {
+                        content.text = window.$(".zn-body__paragraph").text();
+                        var date_str = window.$(".update-time").text();
+                        var date_array = date_str.split(' '); // e.g. [ 'Updated', '1237', 'GMT', '(2037', 'HKT)', 'February', '17', '2015', '' ]
+                        date_str = date_array.slice(date_array.length - 4).join(' ');
 
-                    try {
-                        content.date = new Date(date_str).toISOString().substring(0, 10);
-                    } catch (e) {
-                        err = 'Could not get the Date';
+                        try {
+                            content.date = new Date(date_str).toISOString().substring(0, 10);
+                        } catch (e) {
+                            err = 'Could not get the Date';
+                        }
+                    } else if (url.lastIndexOf('money.cnn.com') > -1) {
+                        content.text = window.$("#storytext p").text();
+                        var date_str = window.$(".share-byline-timestamp .cnnDateStamp").text();
+                        var date_array = date_str.split(' '); // e.g. [ '', 'September', '18,', '2015:', '11:53', 'AM', 'ET', ''    ]
+                        date_str = date_array[1] + ' ' + date_array[2].replace(',', '') + ' ' + date_array[3].replace(':', '');
+
+                        try {
+                            content.date = new Date(date_str).toISOString().substring(0, 10);
+                        } catch (e) {
+                            err = 'Could not get the Date';
+                        }
                     }
-                } else if (url.lastIndexOf('money.cnn.com') > -1) {
-                    content.text = window.$("#storytext p").text();
-                    var date_str = window.$(".share-byline-timestamp .cnnDateStamp").text();
-                    var date_array = date_str.split(' '); // e.g. [ '', 'September', '18,', '2015:', '11:53', 'AM', 'ET', ''    ]
-                    date_str = date_array[1] + ' ' + date_array[2].replace(',', '') + ' ' + date_array[3].replace(':', '');
 
-                    try {
-                        content.date = new Date(date_str).toISOString().substring(0, 10);
-                    } catch (e) {
-                        err = 'Could not get the Date';
-                    }
+                    callback(err, content);
+                } catch (err) {
+                    callback('Could not get the content', {});
                 }
-
-                callback(err, content);
-            } catch (err) {
-                callback('Could not get the content', {});
+            } else {
+                callback(err, {});
             }
         }
     );
@@ -99,7 +109,7 @@ var getContent = function(url, callback) {
 //     console.log(content.date);
 // });
 
-runAPI(getAllNewsUrls, getContent, 'CNN');
+// runAPI(getAllNewsUrls, getContent, 'CNN');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,

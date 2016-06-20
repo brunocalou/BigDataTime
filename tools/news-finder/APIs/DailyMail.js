@@ -1,5 +1,5 @@
 var jsdom = require("jsdom");
-var runAPI = require('../Util/runAPI');
+// var runAPI = require('../Util/runAPI');
 
 /**
 * Get the all the news urls
@@ -13,11 +13,16 @@ var getAllNewsUrls = function(query, page, callback) {
     jsdom.env(
         url, ["http://code.jquery.com/jquery.js"],
         function(err, window) {
-            var urls = [];
-            var link_tags = window.$(".sch-results .sch-res-title a").each(function() {
-                urls.push(this.href);
-            });
-            callback(err, urls);
+            if (!err && typeof(window.$) === 'function') {
+                var urls = [];
+                var link_tags = window.$(".sch-results .sch-res-title a").each(function() {
+                    urls.push(this.href);
+                });
+                if (window) window.close();
+                callback(err, urls);
+            } else {
+                callback(err, []);
+            }
         }
     );
 };
@@ -42,26 +47,32 @@ var getContent = function(url, callback) {
         	* @property {string} text - The news text
         	* @property {string} date - The date (YYYY-MM-DD)
         	*/
-            try {
-                var content = {};
-                content.text = '';
-                content.date = '';
-
-                content.text = window.$(".article-text p:not([class])").text();
-
-                var date_str = window.$(".article-text .article-timestamp-published").text();
-                var date_array = date_str.split(' '); // e.g. [ '\n', '', 'Published:\n', '', '22:00', 'GMT,', '6', 'May', '2016\n' ]
-                date_str = date_array.slice(date_array.length - 3).join(' ').replace('\n', '');
-
+            if (!err && typeof(window.$) === 'function') {
                 try {
-                    content.date = new Date(date_str).toISOString().substring(0, 10);
-                } catch (e) {
-                    err = 'Could not get the Date';
-                }
+                    var content = {};
+                    content.text = '';
+                    content.date = '';
 
-                callback(err, content);
-            } catch (err) {
-                callback('Could not get the content', {});
+                    content.text = window.$(".article-text p:not([class])").text();
+
+                    var date_str = window.$(".article-text .article-timestamp-published").text();
+                    var date_array = date_str.split(' '); // e.g. [ '\n', '', 'Published:\n', '', '22:00', 'GMT,', '6', 'May', '2016\n' ]
+                    date_str = date_array.slice(date_array.length - 3).join(' ').replace('\n', '');
+
+                    try {
+                        content.date = new Date(date_str).toISOString().substring(0, 10);
+                    } catch (e) {
+                        err = 'Could not get the Date';
+                    }
+                    
+                    if (window) window.close();
+                    callback(err, content);
+                } catch (err) {
+                    if (window) window.close();
+                    callback('Could not get the content', {});
+                }
+            } else {
+                callback(err, {});
             }
         }
     );
@@ -75,7 +86,7 @@ var getContent = function(url, callback) {
 //     console.log(content.date);
 // });
 
-runAPI(getAllNewsUrls, getContent, 'DailyMail');
+// runAPI(getAllNewsUrls, getContent, 'DailyMail');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,

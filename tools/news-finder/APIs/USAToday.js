@@ -1,5 +1,5 @@
 var jsdom = require("jsdom");
-var runAPI = require('../Util/runAPI');
+// var runAPI = require('../Util/runAPI');
 
 /**
 * Get the all the news urls
@@ -13,13 +13,18 @@ var getAllNewsUrls = function(query, page, callback) {
     jsdom.env(
         url, ["http://code.jquery.com/jquery.js"],
         function(err, window) {
-            var urls = [];
-            var link_tags = window.$(".search-result-item a").each(function() {
-                if (this.href.lastIndexOf('/story/') > -1) {
-                    urls.push(this.href);
-                }
-            });
-            callback(err, urls);
+            if (!err && typeof(window.$) === 'function') {
+                var urls = [];
+                var link_tags = window.$(".search-result-item a").each(function() {
+                    if (this.href.lastIndexOf('/story/') > -1) {
+                        urls.push(this.href);
+                    }
+                });
+                if (window) window.close();
+                callback(err, urls);
+            } else {
+                callback(err, []);
+            }
         }
     );
 };
@@ -44,25 +49,31 @@ var getContent = function(url, callback) {
         	* @property {string} text - The news text
         	* @property {string} date - The date (YYYY-MM-DD)
         	*/
-            try {
-                var content = {};
-                content.text = '';
-                content.date = '';
-                content.text = window.$(".story [itemprop='articleBody'] p").text();
-                
-                var date_str = window.$(".asset-metabar-time").text();
-                var date_array = date_str.split(' '); //[time, a.m/p.m, EDT, month, day, year]
-                date_str = date_array.slice(date_array.length - 3).join(' ');
-
+            if (!err && typeof(window.$) === 'function') {
                 try {
-                    content.date = new Date(date_str).toISOString().substring(0, 10);
-                } catch (e) {
-                    err = 'Could not get the Date';
-                }
+                    var content = {};
+                    content.text = '';
+                    content.date = '';
+                    content.text = window.$(".story [itemprop='articleBody'] p").text();
+                    
+                    var date_str = window.$(".asset-metabar-time").text();
+                    var date_array = date_str.split(' '); //[time, a.m/p.m, EDT, month, day, year]
+                    date_str = date_array.slice(date_array.length - 3).join(' ');
 
-                callback(err, content);
-            } catch (err) {
-                callback('Could not get the content', {});
+                    try {
+                        content.date = new Date(date_str).toISOString().substring(0, 10);
+                    } catch (e) {
+                        err = 'Could not get the Date';
+                    }
+                    
+                    if (window) window.close();
+                    callback(err, content);
+                } catch (err) {
+                    if (window) window.close();
+                    callback('Could not get the content', {});
+                }
+            } else {
+                callback(err, {});
             }
         }
     );
@@ -76,7 +87,7 @@ var getContent = function(url, callback) {
 //     console.log(content);
 // });
 
-runAPI(getAllNewsUrls, getContent, 'USAToday');
+// runAPI(getAllNewsUrls, getContent, 'USAToday');
 
 module.exports = {
     getAllNewsUrls: getAllNewsUrls,
