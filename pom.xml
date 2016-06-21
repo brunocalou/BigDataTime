@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>osbons</groupId>
+    <artifactId>VBBigData</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>mallet</groupId>
+            <artifactId>com.mallet</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>/home/jean/NetBeansProjects/mallet-2.0.8RC3/dist/mallet.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>mallet-deps</groupId>
+            <artifactId>com.mallet-deps</artifactId>
+            <version>2.0</version>
+            <scope>system</scope>
+            <systemPath>/home/jean/NetBeansProjects/mallet-2.0.8RC3/dist/mallet-deps.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.10</artifactId>
+            <version>1.5.1</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+</project>
