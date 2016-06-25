@@ -11,7 +11,8 @@ import scala.Tuple2;
 import org.apache.spark.api.java.function.Function;
 
 /**
- *
+ *BtcDataReader is the class responsible for reading the csv file about the valuation of the btc.
+ * It is also responsible for create the variation RDD with the variation of the btc from day n, to day n+1
  *
  * @author Jean-Loïc Mugnier <mugnier at polytech.unice.fr>
  */
@@ -32,16 +33,26 @@ public class BtcDataReader {
 //        SQLContext sqlContext = new org.apache.spark.sql.SQLContext(this.sc);
     }
 
+    /**
+     * Import the csv file to our data pairRDD
+     * @param path, path to the csv file
+     */
     public void importData(String path) {
         JavaRDD<String> rd = this.sc.textFile(path);
         rd = filter_r_data(rd, rd.first());
         this.data = rd.mapToPair((String s) -> new Tuple2<>(s.split(",")[0], s.split(",")[1]));
     }
 
+    /**
+     * save csv file associated to the variation rdd
+     */
     public void saveVariation() {
         this.variation.saveAsTextFile("src/resources/btc_variation.csv");
     }
 
+    /**
+     * Calculates the variation and creates the rdd associated to the values. 
+     */
     public void calculateVariation() {
 
         List<Tuple2<String, String>> d = data.collect(); //handle date - remove fisrt
@@ -58,70 +69,19 @@ public class BtcDataReader {
             first = value;
         }
         this.variation = sc.parallelizePairs(lvar);
-//        JavaRDD<String> date = this.data.keys();
-//        date = filter_r_data(date, date.first());
-//        JavaPairRDD<Integer, String> datePair = date.keyBy(f1);
-        //calcule the variation
-//        JavaRDD<String> variation = this.data.values();
-//        List<String> lists = variation.collect();
-//        List<Float> variations = new ArrayList<>();
-//        Iterator<String> it = lists.iterator();
-//
-//        boolean first = true;
-//        float var = 0;
-//        while (it.hasNext()) {
-//            String last, actual = "";
-//            if (first) {
-//                last = it.next();
-//                actual = it.next();
-//                first = false;
-//            } else {
-//                last = actual;
-//                actual = it.next();
-//            }
-//            var = Float.valueOf(actual) - Float.valueOf(last);
-//            variations.add(var);
-//        }
-//        JavaRDD<Float> variationOnly = sc.parallelize((List<Float>) variations);
-//        JavaPairRDD<Integer, Float> variationPair = variation.keyBy(f1);
-//
-//        this.variation = variationPair.join(datePair);
     }
 
-//    public void Function(){
-//        @Override
-//        public Object call(Object t1){
-//        
-//    }
-//    }
-//    public void VoidFunction(Iterator<String> it) {
-//        int i = 0;
-//        float variation = 0;
-//        String last, actual = "";
-//        List<Float> variations = new ArrayList<>();
-//        while (it.hasNext()) {
-//            if (i == 0) {
-//                last = it.next();
-//                actual = it.next();
-//                i++;
-//                variation = Float.valueOf(actual) - Float.valueOf(last);
-//            } else {
-//                last = actual;
-//                actual = it.next();
-//                variation = Float.valueOf(actual) - Float.valueOf(last);
-//            }
-//            variations.add(variation);
-//        }
-//    }
-    public void date_parser(String date) {
-        String[] strs = date.split("-");
-
-    }
 
     public JavaPairRDD<String, String> getData() {
         return this.data;
     }
 
+    /**
+     * RDD filter by removing the string s from the RDD
+     * @param data, RDD
+     * @param s, String to remove from the RDD
+     * @return, RDD without the s value
+     */
     private JavaRDD<String> filter_r_data(JavaRDD<String> data, String s) {
         return data.filter((String str) -> !str.equals(s));
     }

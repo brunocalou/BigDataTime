@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package osbons.vbbigdata;
 
 /**
@@ -21,12 +17,25 @@ public class Date {
         this.day = day;
     }
 
+    /**
+     * Static method that creates a instance of the object Date by passing a
+     * string has argument
+     *
+     * @param date, String in the format year-month-day
+     * @return Date object
+     */
     public static Date getDate(String date) {
         String[] strs = date.split("-");
         Date d = new Date(Integer.valueOf(strs[0]), Integer.valueOf(strs[1]), Integer.valueOf(strs[2]));
         return d;
     }
 
+    /**
+     * Compares two dates
+     *
+     * @param other, other dates
+     * @return -1, if this<other, 0 if eq, 1 if this>other
+     */
     public int compareTo(Date other) {
         int ret = 0;
         if (this.year < other.getYear()) {
