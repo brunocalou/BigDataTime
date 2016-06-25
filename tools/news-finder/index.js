@@ -1,3 +1,5 @@
+#!/usr/bin/nodejs
+
 var requireDir = require('require-dir');
 var APIs = requireDir('./APIs');
 var runAPI = require('./Util/runAPI');
@@ -12,11 +14,28 @@ for (var key in APIs) {
 }
 
 var argv = require('yargs').usage('Usage: $0 <command> [options]')
-	.example('$0', 'Download all news from all the available sites')
-	.example('$0 --bbc', 'Download all news from BBC')
+	.example('$0 -s bbc', 'Download all news from BBC using the default keyword')
+	.example('$0 -s bbc -k blockchain', 'Download all news from BBC using the keyword blockchain')
+	.example('$0 -s bbc -f 3 -t 8', 'Download all news from BBC from page 3 to 8 (inclusive) using the default keyword')
 	.option('s', {
 		alias: 'source',
-		choices: choices
+		choices: choices,
+		describe: 'the site to do the search',
+		demand: true
+	})
+	.option('k', {
+		alias: 'keyword',
+		describe: 'the keywords to search',
+		default: 'bitcoin'
+	})
+	.option('f', {
+		alias: 'from',
+		describe: 'the first page to search',
+		default: '1'
+	})
+	.option('t', {
+		alias: 'to',
+		describe: 'the last page to search'
 	})
 	.help('h')
 	.alias('h', 'help')
@@ -26,4 +45,4 @@ var argv = require('yargs').usage('Usage: $0 <command> [options]')
 var APIName = choiceToName[argv.s];
 var API = APIs[APIName];
 
-runAPI(API.getAllNewsUrls, API.getContent, APIName);
+runAPI(API.getAllNewsUrls, API.getContent, APIName, argv.k, parseInt(argv.f), parseInt(argv.t));

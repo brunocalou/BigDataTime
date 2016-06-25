@@ -3,15 +3,24 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const config = require('./config');
 
-module.exports = function(getAllNewsUrls, getContent, siteName) {
-    var query = 'bitcoin';
-    var page = 1;
+/**
+* Retrieve the news from a website
+* @param {function} getAllNewsUrls - Function that retrieves all the news from a site
+* @param {function} getContent - Function that retrieves all the content from a page
+* @param {string} siteName - The name of the website
+* @param {string} keyword - The keyword to search
+* @param {number} fromPage - The first page to search
+* @param {number} toPage - The last page to search
+*/
+module.exports = function(getAllNewsUrls, getContent, siteName, keyword, fromPage, toPage) {
+    var query = keyword || 'bitcoin';
+    var page = fromPage || 1;
     var output_folder = config.outputFolder + siteName;
 
-    function getAllNewsUrlsCallback(err, urls) {
+    function getAllNewsUrlsCallback(err, urls, currentPage) {
         // console.log(urls);
         if (urls.length === 0) { //empty urls
-            console.log(chalk.red("COULD NOT RETRIEVE URL LIST FOR " + siteName.toUpperCase() + ", QUERY = " + query + ", PAGE = " + page));
+            console.log(chalk.red("COULD NOT RETRIEVE URL LIST FOR " + siteName.toUpperCase() + ", QUERY = " + query + ", PAGE = " + currentPage));
             throw new Error("FAILED TO RETRIEVE URL LIST");
         }
         urls.forEach(function(url) {
@@ -31,7 +40,7 @@ module.exports = function(getAllNewsUrls, getContent, siteName) {
                             if (content.text[0] === ' ') {
                                 content.text = content.text.replace(' ', '');
                             }
-                            fs.writeFile(output_folder + '/' + query + '-' + page + '-' + url.replace(':', '').split('.').join('-').split('/').join('_'),
+                            fs.writeFile(output_folder + '/' + query + '-' + currentPage + '-' + url.replace(':', '').split('.').join('-').split('/').join('_'),
                                 url + '\n' + content.date + '\n' + content.text, (err) => {
                                     if (err) {
                                         console.log(chalk.red("FAILED TO SAVE ") + url);
@@ -58,9 +67,15 @@ module.exports = function(getAllNewsUrls, getContent, siteName) {
             getAllNewsUrls(query, page, function(err, urls) {
                 try {
                     console.log(chalk.yellow(siteName.toUpperCase()) + chalk.yellow(" PAGE ") + page);
-                    getAllNewsUrlsCallback(err, urls);
+                    getAllNewsUrlsCallback(err, urls, page);
                     page += 1;
-                    loop();
+                    if(toPage) {
+                        if (page <= toPage) {
+                            loop();
+                        }
+                    } else {
+                        loop();
+                    }
                 } catch (err) {
                     if (page === 1) {
                         console.log(chalk.red("FAILED TO GET URLS OF " + siteName.toUpperCase()));
