@@ -7,14 +7,25 @@ Install the following dependencies in order to build and run the project
 
 ## Tools
 ### news-finder
-This program is used to retrieve news from a few websites and save them as CSV files
+This program is used to retrieve news from a few websites and save them on disk
 * Location: tools/news-finder
+* Language: Javascript
+
+### bitcoin-market-price-downloader
+This program is used to retrieve the bitcoin price history and save it as a CSV file
+* Location: tools/bitcoin-market-price-downloader
 * Language: Javascript
 
 ## Build
 ### news-finder tool
 ```Shell
 cd tools/news-finder/
+npm install
+```
+
+### bitcoin-market-price-downloader
+```Shell
+cd tools/bitcoin-market-price-downloader/
 npm install
 ```
 
@@ -29,8 +40,22 @@ If you can't execute the script, change its permission (on linux)
 ```Shell
 chmod u+x ./run.sh
 ```
-
-You can download specific sites using the command
+Download specific sites using the command
 ```Shell
 node index.js -s <site>
+```
+You can also choose the keyword, the initial and final pages
+```Shell
+node index.js -s <site> -k <keyword> -f <from-page> -t <to-page>
+```
+Need help? Use the -h parameter
+```Shell
+node index.js -h
+```
+
+### bitcoin-market-price-downloader
+Just run it using
+```Shell
+cd tools/bitcoin-market-price-downloader/
+node index.js
 ```

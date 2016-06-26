@@ -17,7 +17,7 @@ project/plugins/project/
 .worksheet
 
 #nodejs
-tools/news-finder/node_modules/
+**/node_modules/
 
 #news output
 news-output

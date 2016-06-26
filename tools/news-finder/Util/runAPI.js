@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const config = require('./config');
+const path = require('path');
 
 /**
 * Retrieve the news from a website
@@ -15,7 +16,7 @@ const config = require('./config');
 module.exports = function(getAllNewsUrls, getContent, siteName, keyword, fromPage, toPage) {
     var query = keyword || 'bitcoin';
     var page = fromPage || 1;
-    var output_folder = config.outputFolder + siteName;
+    var output_folder = path.join(config.outputFolder, siteName);
 
     function getAllNewsUrlsCallback(err, urls, currentPage) {
         // console.log(urls);
@@ -40,7 +41,7 @@ module.exports = function(getAllNewsUrls, getContent, siteName, keyword, fromPag
                             if (content.text[0] === ' ') {
                                 content.text = content.text.replace(' ', '');
                             }
-                            fs.writeFile(output_folder + '/' + query + '-' + currentPage + '-' + url.replace(':', '').split('.').join('-').split('/').join('_'),
+                            fs.writeFile(path.join(output_folder, query + '-' + currentPage + '-' + url.replace(':', '').split('.').join('-').split('/').join('_')),
                                 url + '\n' + content.date + '\n' + content.text, (err) => {
                                     if (err) {
                                         console.log(chalk.red("FAILED TO SAVE ") + url);
