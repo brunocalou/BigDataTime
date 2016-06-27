@@ -10,7 +10,7 @@ object Vectorization {
 	val sc = new SparkContext(conf)
 	/* start - runnable in shell */
 	val vectorSize=4; // Change this vector size accordingly
-	val path="/path/to/news.txt" // Change this to file path
+	val path="/home/bruno/Programming/BigData/BigDataTime/news-output/BBC/bitcoin-1-http__www-bbc-co-uk_news_technology-36197703" // Change this to file path
 	val lines=sc.textFile(path).flatMap(line=>line.replaceAll("[^A-Za-z0-9]", "").split(" "))
 	val sqlContext=SQLContext.getOrCreate(sc);
 	val docDF=sqlContext.createDataFrame(Seq(lines.collect()).map(Tuple1.apply)).toDF("text")

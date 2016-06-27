@@ -5,6 +5,12 @@
 Install the following dependencies in order to build and run the project
 * [Nodejs](https://nodejs.org/en/)
 
+## Project
+### SOM
+Self-organizing Map
+* Location: src/som
+* Language: Scala
+
 ## Tools
 ### news-finder
 This program is used to retrieve news from a few websites and save them on disk
@@ -17,6 +23,12 @@ This program is used to retrieve the bitcoin price history and save it as a CSV 
 * Language: Javascript
 
 ## Build
+### SOM
+```Shell
+cd src/som/
+sbt package
+```
+
 ### news-finder tool
 ```Shell
 cd tools/news-finder/
@@ -30,6 +42,12 @@ npm install
 ```
 
 ## Run
+### SOM
+```Shell
+cd src/som/
+<your-spark-folder>/bin/spark-submit target/scala<version>/som_project_<version>.jar
+```
+
 ### news-finder tool
 Download all the news from all the available sites
 ```Shell

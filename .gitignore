@@ -1,5 +1,5 @@
-*.class
-*.log
+**/*.class
+**/*.log
 
 # sbt specific
 **/.cache
@@ -13,8 +13,8 @@
 **/project/plugins/project/
 
 # Scala-IDE specific
-.scala_dependencies
-.worksheet
+**/.scala_dependencies
+**/.worksheet
 
 #nodejs
 **/node_modules/
@@ -23,9 +23,7 @@
 news-output
 
 #lib
-lib/
+**/lib/
 
 #btc_valuation
 **/btc_valuation.csv
-
-#scala
