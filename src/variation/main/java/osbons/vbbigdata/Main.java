@@ -1,6 +1,6 @@
 package osbons.vbbigdata;
 
-import cc.mallet.classify.*;
+import org.apache.spark.sql.Row;
 
 /**
  *
@@ -9,13 +9,21 @@ import cc.mallet.classify.*;
 public class Main {
 
     public static void main(String[] args) {
-
+        if (args.length != 2) {
+            System.out.println("1st: variation\n2nd: date (year-month-day)");
+            System.err.print("Wrong number of arguments!\n");
+        }
         String mode = "local[*]";
         BtcDataReader btcR = new BtcDataReader("btc valuation", "local");
         btcR.importData("src/resources/btc_valuation.csv");
-//        System.out.println("\n\ndata: " + btcR.getData().take(10).toString());
         btcR.calculateVariation();
-//        System.out.println("\n\nvariation: " + btcR.getVariation().take(10).toString());
-        
+        System.out.println(args[0]);
+        if ("variation".equals(args[0])) {
+            Float f = btcR.getVariation(args[1]);
+            System.out.println("\n\n");
+            System.out.println(f);
+            System.out.println("\n\n");
+        }
+
     }
 }

@@ -28,6 +28,27 @@ This program is used to retrieve the bitcoin price history and save it as a CSV 
 cd src/som/
 sbt package
 ```
+Creating a jar
+use maven to create a jar:
+add this to to your pom.xml file:
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>fully.qualified.MainClass</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+and call:
+```Shell
+cd src/variation
+mvn clean compile assembly:single
 
 ### news-finder tool
 ```Shell
@@ -47,6 +68,11 @@ npm install
 cd src/som/
 <your-spark-folder>/bin/spark-submit target/scala<version>/som_project_<version>.jar
 ```
+
+```Shell
+cd src/variation
+<your-spark-folder>/bin/spark-submit VBBigData-1.0-SNAPSHOT.jar variation "date(yyyy-mm-dd)"
+
 
 ### news-finder tool
 Download all the news from all the available sites
