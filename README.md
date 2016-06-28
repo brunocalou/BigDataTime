@@ -11,6 +11,11 @@ Self-organizing Map
 * Location: src/som
 * Language: Scala
 
+### BTC Variation Calculator with DataFrame
+This programs reads the Bitcoin valuation csv file and calculates the variation from a day to another. It also implements DataFrame, so we can easily get the variation of the currency by calling the method getVariation() by passing the date as a parameter.
+* Location: src/variation
+* Language: Java
+
 ## Tools
 ### news-finder
 This program is used to retrieve news from a few websites and save them on disk
@@ -21,6 +26,8 @@ This program is used to retrieve news from a few websites and save them on disk
 This program is used to retrieve the bitcoin price history and save it as a CSV file
 * Location: tools/bitcoin-market-price-downloader
 * Language: Javascript
+
+
 
 ## Build
 ### SOM
@@ -50,6 +57,12 @@ and call:
 cd src/variation
 mvn clean compile assembly:single
 
+### BTC Variation Calculator with DataFrame
+```Shell
+cd src/variation/
+mvn package
+```
+
 ### news-finder tool
 ```Shell
 cd tools/news-finder/
@@ -62,11 +75,18 @@ cd tools/bitcoin-market-price-downloader/
 npm install
 ```
 
+
+
 ## Run
 ### SOM
 ```Shell
 cd src/som/
 <your-spark-folder>/bin/spark-submit target/scala<version>/som_project_<version>.jar
+```
+### BTC Variation Calculator with DataFrame
+```Shell
+cd src/variation/
+<your-spark-folder>/bin/spark-submit target/  / .jar
 ```
 
 ```Shell
