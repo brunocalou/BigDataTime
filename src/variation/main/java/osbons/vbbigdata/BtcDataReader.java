@@ -25,7 +25,7 @@ import scala.Tuple2;
  *
  * Como Rodar o BtcDataReader
  *
- * Parametros do Spark App name mode path btc csv file  *
+ * Parametros do Spark App name mode path btc csv file *
  *
  * Metodos importData Importa os dados do arquivo csv para o JavaPairRDD onde a
  * chave é a data, no formato ano-mes-dia.
