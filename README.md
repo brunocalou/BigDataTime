@@ -35,7 +35,13 @@ This program is used to retrieve the bitcoin price history and save it as a CSV 
 cd src/som/
 sbt package
 ```
-Creating a jar
+
+### BTC Variation Calculator with DataFrame
+```Shell
+cd src/variation/
+mvn package
+```
+Creating the jar application
 use maven to create a jar:
 add this to to your pom.xml file:
 
@@ -56,11 +62,6 @@ and call:
 ```Shell
 cd src/variation
 mvn clean compile assembly:single
-
-### BTC Variation Calculator with DataFrame
-```Shell
-cd src/variation/
-mvn package
 ```
 
 ### news-finder tool
@@ -85,14 +86,9 @@ cd src/som/
 ```
 ### BTC Variation Calculator with DataFrame
 ```Shell
-cd src/variation/
-<your-spark-folder>/bin/spark-submit target/  / .jar
-```
-
-```Shell
 cd src/variation
 <your-spark-folder>/bin/spark-submit VBBigData-1.0-SNAPSHOT.jar variation "date(yyyy-mm-dd)"
-
+```
 
 ### news-finder tool
 Download all the news from all the available sites
