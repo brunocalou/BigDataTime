@@ -11,6 +11,11 @@ Self-organizing Map
 * Location: src/som
 * Language: Scala
 
+### BTC Variation Calculator with DataFrame
+This programs reads the Bitcoin valuation csv file and calculates the variation from a day to another. It also implements DataFrame, so we can easily get the variation of the currency by calling the method getVariation() by passing the date as a parameter.
+* Location: src/variation
+* Language: Java
+
 ## Tools
 ### news-finder
 This program is used to retrieve news from a few websites and save them on disk
@@ -22,11 +27,41 @@ This program is used to retrieve the bitcoin price history and save it as a CSV 
 * Location: tools/bitcoin-market-price-downloader
 * Language: Javascript
 
+
+
 ## Build
 ### SOM
 ```Shell
 cd src/som/
 sbt package
+```
+
+### BTC Variation Calculator with DataFrame
+```Shell
+cd src/variation/
+mvn package
+```
+Creating the jar application
+use maven to create a jar:
+add this to to your pom.xml file:
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>fully.qualified.MainClass</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+and call:
+```Shell
+cd src/variation
+mvn clean compile assembly:single
 ```
 
 ### news-finder tool
@@ -41,11 +76,18 @@ cd tools/bitcoin-market-price-downloader/
 npm install
 ```
 
+
+
 ## Run
 ### SOM
 ```Shell
 cd src/som/
 <your-spark-folder>/bin/spark-submit target/scala<version>/som_project_<version>.jar
+```
+### BTC Variation Calculator with DataFrame
+```Shell
+cd src/variation
+<your-spark-folder>/bin/spark-submit VBBigData-1.0-SNAPSHOT.jar variation "date(yyyy-mm-dd)"
 ```
 
 ### news-finder tool
