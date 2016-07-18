@@ -11,7 +11,9 @@ case class Neuron(coord: Coord, weight: Vector, var dist: Distance)
 
 class SOM(dataSize: Int, maxIter: Int, w: Int, h: Int, maxNeigh: Double) extends java.io.Serializable {
 	private val rnd = new java.util.Random
-	private val rndWeight = Array.fill(dataSize)(abs(rnd.nextInt) % 100.0)
+	private def rndWeight = {
+		Array.fill(dataSize)(abs(rnd.nextInt) % 10.0)
+	}
 
 	private var maxDist: Double = Double.NegativeInfinity
 	private var minDist: Double = Double.PositiveInfinity
@@ -28,7 +30,7 @@ class SOM(dataSize: Int, maxIter: Int, w: Int, h: Int, maxNeigh: Double) extends
 	private def winner(vec: Vector): Neuron = {
 		var neuron = kohonenMap(0)
 		kohonenMap.foreach( x =>
-			if(euclid(neuron.weight, x.weight) >
+			if(euclid(vec, neuron.weight) >
 			   euclid(vec, x.weight)) neuron = x)
 		return neuron
 	}
@@ -75,10 +77,10 @@ class SOM(dataSize: Int, maxIter: Int, w: Int, h: Int, maxNeigh: Double) extends
 			maxCluster = maxCluster + 1
 			clusters(n.coord.x)(n.coord.y) = maxCluster
 		}
-		if(n.dist.up >= limit){
+		if(n.dist.up <= limit && n.dist.up >= 0.0){
 			clusters(n.coord.x)(n.coord.y + 1) = clusters(n.coord.x)(n.coord.y)
 		}
-		if(n.dist.right >= limit){
+		if(n.dist.right <= limit && n.dist.right >= 0.0){
 			clusters(n.coord.x + 1)(n.coord.y) = clusters(n.coord.x)(n.coord.y)
 		}
 	}
@@ -148,9 +150,9 @@ object teste extends App {
 	val sc = new SparkContext(new SparkConf )
 	val mapa = new SOM(1,100,2,2,1)
 	val file = sc.textFile("example.txt")
-	val input = file.map(lines => Vectors.dense(lines.toInt))
+	val input = file.map(lines => Vectors.dense(lines.toDouble))
 	mapa.train(input)
-	mapa.clusterize(0.8)
+	mapa.clusterize(0.1)
 	println("\n\n\n\n\n" + mapa.getClusterSize + "\n\n\n\n\n")
 	mapa.getClusterMap.foreach(x => println("\n\n\n\n\n" + x + "\n\n\n\n\n"))
 	println("Agora, eis o mapa:")
