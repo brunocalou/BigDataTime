@@ -27,3 +27,5 @@ news-output
 
 #btc_valuation
 **/btc_valuation.csv
+
+src/som/src/main/scala/som/simple.sbt

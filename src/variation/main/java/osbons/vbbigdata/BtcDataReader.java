@@ -1,5 +1,6 @@
 package osbons.vbbigdata;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,7 @@ import scala.Tuple2;
 /**
  * BtcDataReader is the class responsible for reading the csv file about the
  * valuation of the btc. It is also responsible for create the variation RDD
- * with the variation of the btc from day n, to day n+1
+ * with the variation of the btc on 1 day
  *
  * Como Rodar o BtcDataReader
  *
@@ -51,12 +52,12 @@ public class BtcDataReader {
     private final JavaSparkContext sc;
     private final SQLContext sqlContext;
     private DataFrame dfVariation;
+    DecimalFormat df;
 
-    public BtcDataReader(String name, String mode) {
-        SparkConf conf;
-        conf = new SparkConf().setAppName(name).setMaster(mode);
-        this.sc = new JavaSparkContext(conf);
+    public BtcDataReader(JavaSparkContext sc) {
+        this.sc = sc;
         this.sqlContext = new SQLContext(this.sc);
+        this.df = new DecimalFormat("#.000");
 
     }
 
@@ -74,8 +75,8 @@ public class BtcDataReader {
     /**
      * save csv file associated to the variation rdd
      */
-    private void saveVariation() {
-        this.variation.saveAsTextFile("src/resources/btc_variation.csv");
+    public void saveVariation() {
+        BtcDataReader.variation.saveAsTextFile("src/resources/btc_variation.csv");
     }
 
     /**
@@ -92,6 +93,7 @@ public class BtcDataReader {
             String date = row._1();
             Float value = Float.valueOf(row._2());
             Float var = value - first;
+//            Tuple2<String, String> t = new Tuple2<>(date, df.format(var));
             Tuple2<String, String> t = new Tuple2<>(date, String.valueOf(var));
             lvar.add(t);
             first = value;
