@@ -1,29 +1,29 @@
-*.class
-*.log
+**/*.class
+**/*.log
 
 # sbt specific
-.cache
-.history
-.lib/
-dist/*
-target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
+**/.cache
+**/.history
+**/.lib/
+**/dist/*
+**/target/
+**/lib_managed/
+**/src_managed/
+**/project/boot/
+**/project/plugins/project/
 
 # Scala-IDE specific
-.scala_dependencies
-.worksheet
+**/.scala_dependencies
+**/.worksheet
 
 #nodejs
-tools/news-finder/node_modules/
+**/node_modules/
 
 #news output
 news-output
 
 #lib
-lib/
+**/lib/
 
 #btc_valuation
-src/resources/btc_valuation.csv
+**/btc_valuation.csv
