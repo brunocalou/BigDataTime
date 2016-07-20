@@ -153,8 +153,8 @@ object teste extends App {
 	val file = sc.textFile("example.txt")
 	val input = file.map(lines => {
 	val line = lines.split(",")
-	val debinha = line.map(_.toDouble)
-	Vectors.dense(debinha)
+	val lineMap = line.map(_.toDouble)
+	Vectors.dense(lineMap)
 	})
 	mapa.train(input)
 	mapa.clusterize(0.1)
