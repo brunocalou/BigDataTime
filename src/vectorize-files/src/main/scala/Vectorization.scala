@@ -51,7 +51,7 @@ object Vectorization {
   }
   
   def main(args: Array[String]) {
-	val vectorSize=4; // Alterar tamanho deste vetor de acordo com o desejado
+	val vectorSize=3; // Alterar tamanho deste vetor de acordo com o desejado
 
 	val folder = if (args.length > 0) args(0) else "";
 	val files = getListOfFiles(folder)
@@ -63,26 +63,25 @@ object Vectorization {
 	rddi.collect()
 	rddi.foreach(a=>
 			{
-			new PrintWriter(new FileOutputStream("C:/debora/rdds.txt", true)) { 
+			new PrintWriter(new FileOutputStream("output/rdds.txt", true)) { 
 				write(a.toString()); 
 				close; 
 				}
 			}
 		)
-	vectorsDF.foreach(vectors=>vectors.foreach(a=>println(a.toString())))	
+	//vectorsDF.foreach(vectors=>vectors.foreach(a=>println(a.toString())))	
 	vectorsDF.foreach(vectors=>vectors.foreach(a=>
 			{
-			new PrintWriter(new FileOutputStream("C:/debora/vectors.txt", true)) { 
+			new PrintWriter(new FileOutputStream("output/vectors.txt", true)) { 
 				write(a.toString()); 
 				close; 
 				}
 			}
 		))
-	val vectorsData=files.map(file=>getData(file.getPath))
-	vectorsData.foreach(vectors=>vectors.foreach(a=>println(a.toString())))	
+	val vectorsData=files.map(file=>getData(file.getPath))	
 	vectorsData.foreach(vectors=>vectors.foreach(a=>
 			{
-			new PrintWriter(new FileOutputStream("C:/debora/data.txt", true)) { 
+			new PrintWriter(new FileOutputStream("output/data.txt", true)) { 
 				write(a.toString()); 
 				close; 
 				}

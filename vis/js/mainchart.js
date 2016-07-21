@@ -35,7 +35,7 @@ var config = {
 		responsive: true,
         title:{
             display:true,
-            text:"Chart.js Time Point Data"
+            text:"Variação do Bitcoin"
         },
 		scales: {
 			xAxes: [{

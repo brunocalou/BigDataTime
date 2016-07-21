@@ -148,9 +148,9 @@ class SOM(dataSize: Int, maxIter: Int, w: Int, h: Int, maxNeigh: Double) extends
 }
 
 object teste extends App {
-	val sc = new SparkContext(new SparkConf )
+	val sc = new SparkContext(new SparkConf )	
 	val mapa = new SOM(4,100,2,2,1)
-	val file = sc.textFile("example.txt")
+	val file = sc.textFile("rdds.txt")
 	val input = file.map(lines => {
 	val line = lines.split(",")
 	val lineMap = line.map(_.toDouble)
@@ -158,13 +158,24 @@ object teste extends App {
 	})
 	mapa.train(input)
 	mapa.clusterize(0.1)
-	println("\n\n\n\n\n" + mapa.getClusterSize + "\n\n\n\n\n")
+	println("\n" + mapa.getClusterSize + "\n")
 	//mapa.getClusterMap.foreach(x => println("\n\n\n\n\n" + x + "\n\n\n\n\n"))
 	println("Agora, eis o mapa:")
-	mapa.getMap.foreach(x => println("\n\n\n\n\n" + x + "\n\n\n\n\n"))
+	mapa.getMap.foreach(x => {
+				println("\n" + x + "\n")
+				new PrintWriter(new FileOutputStream("output/map.txt", true)) { 
+				write(x.toString()); 
+				close; 
+				}
+			}
+		)
 	val result = mapa.getCluster(input)
-	println("\n\n\n\n\n" + result + "\n\n\n\n\n")
-	val oos = new ObjectOutputStream(new FileOutputStream("C:/debora/KohonenMap"))
+	println("\n" + result + "\n")
+	new PrintWriter(new FileOutputStream("output/result.txt", true)) { 
+		write(result.toString()); 
+		close; 
+	}
+	val oos = new ObjectOutputStream(new FileOutputStream("output/KohonenMap"))
 	oos.writeObject(mapa)
 	oos.close
 }
