@@ -1,12 +1,12 @@
-
 package osbons.vbbigdata;
 
 /**
- *
+ * date format 
  * @author Jean-Loïc Mugnier <mugnier at polytech.unice.fr>
  */
 public class Date {
 
+    private static final String SEPARATOR = "-";
     private int year;
     private int month;
     private int day;
@@ -17,6 +17,13 @@ public class Date {
         this.day = day;
     }
 
+    Date(String date) {
+        String[] data = date.split(SEPARATOR);
+        this.year = Integer.valueOf(data[0]);
+        this.month = Integer.valueOf(data[1]);
+        this.day = Integer.valueOf(data[2]);
+    }
+
     /**
      * Static method that creates a instance of the object Date by passing a
      * string has argument
@@ -25,7 +32,7 @@ public class Date {
      * @return Date object
      */
     public static Date getDate(String date) {
-        String[] strs = date.split("-");
+        String[] strs = date.split(SEPARATOR);
         Date d = new Date(Integer.valueOf(strs[0]), Integer.valueOf(strs[1]), Integer.valueOf(strs[2]));
         return d;
     }
